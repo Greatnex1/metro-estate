@@ -1,9 +1,14 @@
 package com.nouah.metroestate.exception;
 
+import lombok.Getter;
+
+@Getter
 public class ApiException extends RuntimeException {
-    final int code;
+
+   private final int code;
     public ApiException(String message, int code) {
         super(message);
         this.code = code;
     }
+
 }
