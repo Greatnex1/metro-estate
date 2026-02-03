@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.Optional;
 
 public interface EstateRepository extends  JpaRepository<Estate, Long>, JpaSpecificationExecutor<Estate> {
-//    /Optional<Estate> findByEstateId(String id);
+ Optional<Estate> findByEstateId(String id);
 
     boolean existsByEstateId(String estateId);
 
