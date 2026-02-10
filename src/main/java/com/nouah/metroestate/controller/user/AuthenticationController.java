@@ -1,8 +1,11 @@
 package com.nouah.metroestate.controller.user;
 
 import com.nouah.metroestate.dto.CustomerDto;
+import com.nouah.metroestate.dto.request.AdminCustomerRequest;
 import com.nouah.metroestate.dto.request.CustomerRequest;
 import com.nouah.metroestate.dto.request.LoginRequest;
+import com.nouah.metroestate.dto.request.PasswordResetRequest;
+import com.nouah.metroestate.dto.response.ApiResponse;
 import com.nouah.metroestate.dto.response.BaseResponse;
 import com.nouah.metroestate.dto.response.LoginResponse;
 import com.nouah.metroestate.security.model.Unsecured;
@@ -11,6 +14,7 @@ import com.nouah.metroestate.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,8 +31,9 @@ public class AuthenticationController {
     private final UserService userService;
 
 
-//    @Unsecured
-    @PostMapping("/create-customer")
+   @Unsecured
+//   @PreAuthorize("hasAuthority('CREATE_SUPER_ADMIN')")
+   @PostMapping("/create-customer")
     public ResponseEntity<BaseResponse<CustomerDto>> createCustomer(@RequestBody @Valid CustomerRequest customerRequest) {
         CustomerDto customer = userService.createCustomer(customerRequest);
         return new ResponseEntity<>(BaseResponse.success(customer, "Customer created successfully"), CREATED);
@@ -39,5 +44,19 @@ public class AuthenticationController {
     public ResponseEntity<BaseResponse<LoginResponse>> customerLogin(@RequestBody @Valid LoginRequest loginRequest) {
         LoginResponse loginResponse = authenticationService.authenticate(loginRequest);
         return ResponseEntity.ok(BaseResponse.success(loginResponse, "You are successfully logged in."));
+    }
+
+   @PreAuthorize("hasAuthority('CREATE_SUPER_ADMIN')")
+    @PostMapping("/admin-create-customer")
+    public ResponseEntity<BaseResponse<CustomerDto>> adminCreateCustomer(@RequestBody @Valid AdminCustomerRequest customerRequest) {
+        CustomerDto customer = userService.adminCreateCustomer(customerRequest);
+        return new ResponseEntity<>(BaseResponse.success(customer, "Customer created by admin successfully"), CREATED);
+    }
+
+    @Unsecured
+    @PostMapping("/reset-password")
+    public ResponseEntity<BaseResponse<ApiResponse>> resetPassword(@RequestBody @Valid PasswordResetRequest passwordResetRequest) {
+        ApiResponse response = userService.resetPassword(passwordResetRequest);
+        return ResponseEntity.ok(BaseResponse.success(response, "Password reset successfully"));
     }
 }
