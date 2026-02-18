@@ -44,8 +44,8 @@ public class CustomerDto implements Serializable {
     private String estateId;
 
 
-    public CustomerDto(UserEntity customer){
-//        this.userId = customer.getUserId();
+    public CustomerDto(UserEntity customer) {
+        this.userId = customer.getUserId();
         this.firstName = customer.getFirstName();
         this.lastName = customer.getLastName();
         this.emailAddress = customer.getEmail();
@@ -64,7 +64,5 @@ public class CustomerDto implements Serializable {
         this.designation = customer.getDesignation().toString();
         this.estateId = customer.getEstateId();
     }
-
-
 
 }
